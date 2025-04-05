@@ -30,6 +30,9 @@ def create_app():
     admin.add_view(ModelView(QuestionFlow, db.session))
 
     from .auth import auth_bp
+    from .questionnaire import questionnaire_bp
+
     app.register_blueprint(auth_bp)
+    app.register_blueprint(questionnaire_bp)
 
     return app
