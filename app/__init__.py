@@ -1,12 +1,13 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from .models import db, User, Question, Option, Answer, QuestionFlow
 
-db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
 
@@ -20,5 +21,15 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+
+    admin = Admin(app, name='Questionnaire Admin', template_mode='bootstrap4')
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Question, db.session))
+    admin.add_view(ModelView(Option, db.session))
+    admin.add_view(ModelView(Answer, db.session))
+    admin.add_view(ModelView(QuestionFlow, db.session))
+
+    from .auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     return app
