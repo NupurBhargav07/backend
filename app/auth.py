@@ -32,6 +32,6 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(email=data.get("email")).first()
     if user and check_password_hash(user.password, data.get("password")):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         return {"access_token": access_token}
     return {"msg": "Invalid credentials"}, 401
